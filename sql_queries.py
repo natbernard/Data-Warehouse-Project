@@ -114,26 +114,74 @@ CREATE TABLE IF NOT EXISTS staging_songs(
 # STAGING TABLES
 
 staging_events_copy = ("""
-""").format()
+copy staging_events from {} 
+credentials 'aws_iam_role={}'
+gzip region 'us-west-2';
+""").format(config.get('S3', 'LOG_DATA'), config.get('IAM_ROLE', 'ARN'))
 
 staging_songs_copy = ("""
-""").format()
+copy staging_songs from {} 
+credentials 'aws_iam_role={}'
+gzip region 'us-west-2';
+""").format(config.get('S3', 'SONG_DATA'), config.get('IAM_ROLE', 'ARN'))
+
 
 # FINAL TABLES
 
 songplay_table_insert = ("""
+INSERT INTO songplays (
+    songplay_id
+    start_time
+    user_id
+    level
+    song_id
+    artist_id
+    session_id
+    location
+    user_agent
+) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
 """)
 
 user_table_insert = ("""
+INSERT INTO users (
+    user_id
+    first_name
+    last_name
+    gender
+    level
+) VALUES (%s, %s, %s, %s, %s)
 """)
 
 song_table_insert = ("""
+INSERT INTO songs (
+    song_id
+    title
+    artist_id
+    year
+    duration
+) VALUES (%s, %s, %s, %s, %s)
 """)
 
 artist_table_insert = ("""
+INSERT INTO artists (
+    artist_id
+    name
+    location
+    latitude
+    longitude
+) VALUES (%s, %s, %s, %s, %s)
 """)
 
 time_table_insert = ("""
+INSERT INTO time (
+    start_time
+    hour
+    day
+    week
+    mont
+    year
+    weekday
+) VALUES (%s, %s, %s, %s, %s, %s, %s)
 """)
 
 # QUERY LISTS
