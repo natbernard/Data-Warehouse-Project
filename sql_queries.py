@@ -8,6 +8,7 @@ config.read('dwh.cfg')
 LOG_DATA = config.get("s3", "LOG_DATA")
 LOG_JSONPATH = config.get("s3", "LOG_JSONPATH")
 SONG_DATA = config.get("s3", "SONG_DATA")
+IAM_ROLE = config.get("IAM_ROLE", "ARN" )
 
 # DROP TABLES
 
@@ -75,43 +76,43 @@ CREATE TABLE IF NOT EXISTS staging_songs(
 
 user_table_create = ("""
 CREATE TABLE IF NOT EXISTS users(
-    user_id int
-    first_name text
-    last_name text
-    gender text
-    level text
+    user_id     int     not null primary key,
+    first_name  text,
+    last_name   text,
+    gender      text,
+    level       text
 )
 """)
 
 song_table_create = ("""
 CREATE TABLE IF NOT EXISTS songs(
-    song_id text
-    title text
-    artist_id text
-    year int
-    duration int
+    song_id     text    not null    primary key,
+    title       text    not null,
+    artist_id   text    not null,
+    year        int,
+    duration    int
 )
 """)
 
 artist_table_create = ("""
 CREATE TABLE IF NOT EXISTS staging_songs(
-    artist_id text
-    name text
-    location text
-    latitude numeric
-    longitude numeric
+    artist_id   text    not null    primary key,
+    name        text,
+    location    text,
+    latitude    numeric,
+    longitude   numeric
 )
 """)
 
 time_table_create = ("""
 CREATE TABLE IF NOT EXISTS staging_songs(
-    start_time timestamp
-    hour int
-    day int
-    week int
-    month int
-    year int
-    weekday int
+    start_time  timestamp   not null distkey sortkey primary key,
+    hour        int         not null,
+    day         int         not null,
+    week        int         not null,
+    month       int         not null,
+    year        int         not null,
+    weekday     int         not null
 )
 """)
 
@@ -121,13 +122,13 @@ staging_events_copy = ("""
 copy staging_events from {} 
 credentials 'aws_iam_role={}'
 gzip region 'us-west-2';
-""").format(config.get('S3', 'LOG_DATA'), config.get('IAM_ROLE', 'ARN'))
+""").format(LOG_DATA, IAM_ROLE)
 
 staging_songs_copy = ("""
 copy staging_songs from {} 
 credentials 'aws_iam_role={}'
 gzip region 'us-west-2';
-""").format(config.get('S3', 'SONG_DATA'), config.get('IAM_ROLE', 'ARN'))
+""").format(SONG_DATA, IAM_ROLE)
 
 
 # FINAL TABLES
