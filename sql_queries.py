@@ -2,8 +2,12 @@ import configparser
 
 
 # CONFIG
+
 config = configparser.ConfigParser()
 config.read('dwh.cfg')
+LOG_DATA = config.get("s3", "LOG_DATA")
+LOG_JSONPATH = config.get("s3", "LOG_JSONPATH")
+SONG_DATA = config.get("s3", "SONG_DATA")
 
 # DROP TABLES
 
@@ -19,53 +23,53 @@ time_table_drop = "DROP TABLE IF TABLE EXISTS time;"
 
 staging_events_table_create= ("""
 CREATE TABLE IF NOT EXISTS staging_events(
-    artist text
-    auth text
-    firstName text
-    gender text
-    iteminSession int
-    lastName text
-    length numeric
-    level text
-    location text
-    method text
-    page text
-    registration numeric
-    sessionId int
-    song text
-    status int
-    ts timestamp
-    userAgent text
-    userId int
+    artist          text,
+    auth            text,
+    firstName       text,
+    gender          text,
+    iteminSession   int,
+    lastName        text,
+    length          numeric,
+    level           text,
+    location        text,
+    method          text,
+    page            text,
+    registration    numeric,
+    sessionId       int,
+    song            text,
+    status          int,
+    ts              timestamp,
+    userAgent       text,
+    userId          int
 )
 """)
 
 staging_songs_table_create = ("""
 CREATE TABLE IF NOT EXISTS staging_songs(
-    num_songs int
-    artist_id text
-    artist_latitude numeric
-    artist longitude numeric
-    artist location text
-    artist name text
-    song_id text
-    title text
-    duration numeric
-    year int
+    song_id             text     primary key,
+    num_songs           int,
+    artist_id           text,
+    artist_latitude     numeric,
+    artist longitude    numeric,
+    artist location     text,
+    artist name         text,
+    title               text,
+    duration            numeric,
+    year                int
 )
 """)
 
 songplay_table_create = ("""
 CREATE TABLE IF NOT EXISTS staging_songs(
-    songplay_id varchar
-    start_time bigint
-    user_id text
-    level text
-    song_id text
-    artist_id text
-    session_id int
-    location text
-    user_agent text
+    songplay_id     varchar     primary key     identity(0,1),
+    start_time      bigint      not null        sortkey         distkey,
+    user_id         text        not null,
+    level           text,
+    song_id         text        not null,
+    artist_id       text        not null,
+    session_id      int,
+    location        text,
+    user_agent      text
 )
 """)
 
