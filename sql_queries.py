@@ -51,9 +51,9 @@ CREATE TABLE IF NOT EXISTS staging_songs(
     num_songs           int,
     artist_id           text,
     artist_latitude     numeric,
-    artist longitude    numeric,
-    artist location     text,
-    artist name         text,
+    artist_longitude    numeric,
+    artist_location     text,
+    artist_name         text,
     title               text,
     duration            numeric,
     year                int
@@ -62,9 +62,9 @@ CREATE TABLE IF NOT EXISTS staging_songs(
 
 songplay_table_create = """
 CREATE TABLE IF NOT EXISTS songplays(
-    songplay_id     varchar     primary key     identity(0,1),
-    start_time      bigint      not null        sortkey         distkey,
-    user_id         text        not null,
+    songplay_id     integer     primary key     identity(0,1),
+    start_time      timestamp   not null        sortkey         distkey,
+    user_id         varchar     not null,
     level           text,
     song_id         text        not null,
     artist_id       text        not null,
